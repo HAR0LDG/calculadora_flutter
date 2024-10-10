@@ -25,15 +25,19 @@ class _CalculadoraAppState extends State<CalculadoraApp> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(right: 12.0),
-                child: Text(
-                  "Historial",
-                  style: GoogleFonts.rubik(
-                    textStyle: const TextStyle(color: Colors.white, fontSize: 24),
+              Container(
+                alignment: const Alignment(1.0, 1.0),
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 12.0),
+                  child: Text(
+                    "Historial",
+                    style: GoogleFonts.rubik(
+                      textStyle:
+                          const TextStyle(color: Colors.white, fontSize: 24),
+                    ),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
