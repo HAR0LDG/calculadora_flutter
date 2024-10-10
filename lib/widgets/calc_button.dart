@@ -9,14 +9,15 @@ class Calcbutton extends StatelessWidget {
   final Color foreColor;
   final Color background;
 
-  const Calcbutton(
-      {super.key,
-      required this.callback,
-      required this.text,
-      required this.textSize,
-      this.textColor = Colors.blue,
-      this.foreColor = Colors.blue,
-      this.background = Colors.white});
+  const Calcbutton({
+    super.key,
+    required this.callback,
+    required this.text,
+    required this.textSize,
+    this.textColor = Colors.blue,
+    this.foreColor = Colors.blue,
+    this.background = Colors.white, // No nullable y valor predeterminado
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,19 +31,21 @@ class Calcbutton extends StatelessWidget {
             callback(text);
           },
           style: TextButton.styleFrom(
-              backgroundColor: background,
-              foregroundColor: foreColor,
-              padding: const EdgeInsets.all(16.0),
-              textStyle: const TextStyle(
-                fontSize: 20.0,
-              )),
+            backgroundColor: background, // Usar el color de fondo aquí
+            foregroundColor: foreColor,
+            padding: const EdgeInsets.all(16.0),
+            textStyle: const TextStyle(
+              fontSize: 20.0,
+            ),
+          ),
           child: Text(
             text,
             style: GoogleFonts.rubik(
-                textStyle: TextStyle(
-              fontSize: textSize,
-              color: textColor,
-            )),
+              textStyle: TextStyle(
+                fontSize: textSize,
+                color: textColor,
+              ),
+            ),
           ),
         ),
       ),

@@ -1,9 +1,9 @@
 import 'package:calculadora/widgets/calc_button.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import "package:math_expressions/math_expressions.dart";
+import 'package:math_expressions/math_expressions.dart';
 
-void main(List<String> args) {
+void main() {
   runApp(const CalculadoraApp());
 }
 
@@ -15,19 +15,27 @@ class CalculadoraApp extends StatefulWidget {
 }
 
 class _CalculadoraAppState extends State<CalculadoraApp> {
-  String historial = " ";
-  String expresion = " ";
+  String historial = "";
+  String expresion = "";
 
   void allClear(String text) {
     setState(() {
-      historial = " ";
-      expresion = " ";
+      historial = "";
+      expresion = "";
     });
   }
 
   void clear(String text) {
     setState(() {
-      expresion = " ";
+      expresion = "";
+    });
+  }
+
+  void backspace(String text) {
+    setState(() {
+      if (expresion.isNotEmpty) {
+        expresion = expresion.substring(0, expresion.length - 1);
+      }
     });
   }
 
@@ -38,14 +46,33 @@ class _CalculadoraAppState extends State<CalculadoraApp> {
   }
 
   void evaluate(String text) {
+    // Si la expresión está vacía, evalúa el historial
+    if (expresion.isEmpty) {
+      if (historial.isNotEmpty) {
+        expresion = historial; // Restaura la expresión del historial
+      } else {
+        return; // No hay nada que calcular
+      }
+    }
+
     Parser p = Parser();
     Expression exp = p.parse(expresion);
     ContextModel cm = ContextModel();
     setState(() {
-      historial = expresion;
-      expresion = exp.evaluate(EvaluationType.REAL, cm).toString();
+      double result = exp.evaluate(EvaluationType.REAL, cm);
+      historial = expresion; // Guarda la expresión en el historial
+      expresion = result == result.toInt() ? result.toInt().toString() : result.toStringAsFixed(2); // Elimina decimales si son cero
     });
   }
+
+  // Lista de botones
+  final List<List<String>> buttons = [
+    ["AC", "C", "%", "/"],
+    ["7", "8", "9", "*"],
+    ["4", "5", "6", "-"],
+    ["1", "2", "3", "+"],
+    [".", "0", "←", "="],
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -53,168 +80,39 @@ class _CalculadoraAppState extends State<CalculadoraApp> {
       debugShowCheckedModeBanner: false,
       title: "Calculadora",
       home: Scaffold(
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-        body: Container(
+        backgroundColor: Colors.white,
+        body: Padding(
           padding: const EdgeInsets.all(12),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              Container(
-                alignment: const Alignment(1.0, 1.0),
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 12.0),
-                  child: Text(
-                    historial,
-                    style: GoogleFonts.rubik(
-                      color: Colors.black,
-                      fontSize: 24,
-                    ),
-                  ),
-                ),
+            children: [
+              Align(
+                alignment: Alignment.centerRight,
+                child: Text(historial, style: GoogleFonts.rubik(fontSize: 24)),
               ),
-              Container(
-                alignment: const Alignment(1.0, 1.0),
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Text(
-                    expresion,
-                    style: GoogleFonts.rubik(
-                      fontSize: 48,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Text(expresion, style: GoogleFonts.rubik(fontSize: 48)),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Calcbutton(
-                      background: Colors.red,
-                      foreColor: const Color.fromARGB(255, 255, 255, 255),
-                      text: "AC",
-                      callback: allClear,
-                      textSize: 20,
-                      textColor: Colors.white),
-                  Calcbutton(
-                    background: Colors.orange,
-                    foreColor: const Color.fromARGB(255, 255, 255, 255),
-                    textColor: Colors.white,
-                    text: "C",
-                    callback: allClear,
-                    textSize: 20,
-                  ),
-                  Calcbutton(
-                    text: "%",
-                    callback: numClick,
-                    textSize: 20,
-                  ),
-                  Calcbutton(
-                    text: "/",
-                    callback: numClick,
-                    textSize: 20,
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Calcbutton(
-                    text: "7",
-                    callback: numClick,
-                    textSize: 20,
-                  ),
-                  Calcbutton(
-                    text: "8",
-                    callback: numClick,
-                    textSize: 20,
-                  ),
-                  Calcbutton(
-                    text: "9",
-                    callback: numClick,
-                    textSize: 20,
-                  ),
-                  Calcbutton(
-                    text: "*",
-                    callback: numClick,
-                    textSize: 20,
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Calcbutton(
-                    text: "4",
-                    callback: numClick,
-                    textSize: 20,
-                  ),
-                  Calcbutton(
-                    text: "5",
-                    callback: numClick,
-                    textSize: 20,
-                  ),
-                  Calcbutton(
-                    text: "6",
-                    callback: numClick,
-                    textSize: 20,
-                  ),
-                  Calcbutton(
-                    text: "-",
-                    callback: numClick,
-                    textSize: 20,
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Calcbutton(
-                    text: "1",
-                    callback: numClick,
-                    textSize: 20,
-                  ),
-                  Calcbutton(
-                    text: "2",
-                    callback: numClick,
-                    textSize: 20,
-                  ),
-                  Calcbutton(
-                    text: "3",
-                    callback: numClick,
-                    textSize: 20,
-                  ),
-                  Calcbutton(
-                    text: "+",
-                    callback: numClick,
-                    textSize: 20,
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Calcbutton(
-                    text: ".",
-                    callback: numClick,
-                    textSize: 20,
-                  ),
-                  Calcbutton(
-                    text: "0",
-                    callback: numClick,
-                    textSize: 20,
-                  ),
-                  Calcbutton(
-                    text: "00",
-                    callback: numClick,
-                    textSize: 20,
-                  ),
-                  Calcbutton(
-                    text: "=",
-                    callback: evaluate,
-                    textSize: 20,
-                  ),
-                ],
-              ),
+              ...buttons.map((row) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: row.map((text) {
+                    Color? background = (text == "AC") ? Colors.red : (text == "C") ? Colors.orange : Colors.white;
+                    Color? textColor = (text == "AC" || text == "C") ? Colors.white : Colors.blue;
+                    Color? foregroundColor = (text == "AC" || text == "C") ? Colors.white : Colors.blue;
+                   
+                    return Calcbutton(
+                      text: text,
+                      textSize: 22,
+                      background: background,
+                      textColor: textColor,
+                      foreColor: foregroundColor,
+                      callback: (text == "AC") ? allClear : (text == "C") ? clear : (text == "←") ? backspace : (text == "=") ? evaluate : numClick,
+                    );
+                  }).toList(),
+                );
+              }),
             ],
           ),
         ),
